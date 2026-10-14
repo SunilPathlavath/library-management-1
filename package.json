@@ -1,0 +1,20 @@
+{
+  "name": "library-management-system",
+  "version": "2.0.0",
+  "description": "Library Management System with admin login, inventory, students, issue/return history, Docker and Jenkins",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node --check server.js && node --check public/app.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1"
+  }
+}

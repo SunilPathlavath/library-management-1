@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LibraryDesk | Library Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="message" class="message" hidden role="status"></div>
+  <section id="loginScreen" class="login-screen">
+    <div class="login-art">
+      <div class="brand brand-light"><span class="brand-icon">L</span> LibraryDesk</div>
+      <div class="login-copy"><span class="eyebrow">YOUR LIBRARY, ORGANIZED</span><h1>Knowledge grows when it's shared.</h1><p>Manage books, students and borrowing in one calm, simple workspace.</p></div>
+      <div class="book-stack"><span></span><span></span><span></span><span></span></div>
+      <small class="login-foot">LIBRARY MANAGEMENT SYSTEM · DEVOPS LAB PROJECT</small>
+    </div>
+    <div class="login-panel">
+      <form id="loginForm" class="login-card">
+        <div class="brand"><span class="brand-icon">L</span> LibraryDesk</div>
+        <p class="eyebrow">ADMIN PORTAL</p><h2>Welcome back</h2><p class="muted">Sign in to manage your library.</p>
+        <label for="username">Username</label><input id="username" name="username" autocomplete="username" value="admin" required>
+        <label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Enter admin password" required>
+        <button class="btn btn-primary btn-wide" type="submit">Sign in <span>→</span></button>
+        <p class="login-note">Demo default: <strong>admin</strong> / <strong>ChangeMe123!</strong><br>Change this password in your .env file before sharing the app.</p>
+      </form>
+    </div>
+  </section>
+
+  <div id="appShell" class="app-shell" hidden>
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-icon">L</span> LibraryDesk</div>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="nav">
+        <button data-page="dashboard" class="active"><span>▦</span> Dashboard</button>
+        <button data-page="books"><span>▤</span> Book inventory</button>
+        <button data-page="students"><span>♙</span> Students</button>
+        <button data-page="circulation"><span>⇄</span> Issue & return</button>
+        <button data-page="history"><span>◷</span> History</button>
+      </nav>
+      <div class="sidebar-bottom"><div class="admin-avatar">A</div><div class="admin-meta"><strong>Administrator</strong><small>Library manager</small></div><button id="logoutBtn" class="logout" title="Log out" aria-label="Log out">↗</button></div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar"><div><p class="eyebrow">LIBRARY MANAGEMENT</p><h1 id="pageTitle">Dashboard</h1></div><div class="topbar-right"><span class="live-dot"></span><span>System online</span><div class="top-avatar">A</div></div></header>
+      <div class="content">
+        <section id="page-dashboard" class="page">
+          <div class="welcome-banner"><div><span class="eyebrow">YOUR LIBRARY AT A GLANCE</span><h2>A little more knowledge, every day.</h2><p>Here's what's happening in your library today.</p></div><div class="banner-icon">▤</div></div>
+          <div class="stats-grid">
+            <article class="stat-card"><div class="stat-icon purple">▤</div><span class="stat-label">Book titles</span><strong id="statTitles">—</strong><small>Unique titles in catalog</small></article>
+            <article class="stat-card"><div class="stat-icon green">✓</div><span class="stat-label">Available copies</span><strong id="statCopies">—</strong><small>Ready to be borrowed</small></article>
+            <article class="stat-card"><div class="stat-icon orange">♙</div><span class="stat-label">Registered students</span><strong id="statStudents">—</strong><small>Active student records</small></article>
+            <article class="stat-card"><div class="stat-icon blue">⇄</div><span class="stat-label">Books on loan</span><strong id="statIssued">—</strong><small>Currently issued copies</small></article>
+          </div>
+          <div class="quick-actions"><button class="btn btn-primary" data-go="books">＋ Add or manage books</button><button class="btn btn-light" data-go="students">＋ Register a student</button><button class="btn btn-light" data-go="circulation">⇄ Issue a book</button></div>
+          <div class="dashboard-grid">
+            <section class="panel"><div class="panel-heading"><div><h3>Recent activity</h3><p>Latest issue and return records</p></div><button class="text-button" data-go="history">View history →</button></div><div class="table-wrap"><table><thead><tr><th>Book</th><th>Student</th><th>Status</th><th>Issue date</th></tr></thead><tbody id="recentTransactions"></tbody></table></div></section>
+            <section class="panel"><div class="panel-heading"><div><h3>Low availability</h3><p>Books with one or zero copies free</p></div></div><div id="lowStock" class="stock-list"></div></section>
+          </div>
+        </section>
+
+        <section id="page-books" class="page" hidden>
+          <div class="section-intro"><div><h2>Book inventory</h2><p>Add, edit and track your library's collection.</p></div></div>
+          <section class="panel form-panel"><div class="panel-heading"><div><h3 id="bookFormTitle">Add a book</h3><p>Enter the book details and total number of copies.</p></div></div>
+            <form id="bookForm" class="form-grid">
+              <input type="hidden" id="bookId">
+              <div><label for="bookTitle">Book title *</label><input id="bookTitle" name="title" required placeholder="e.g. The Alchemist"></div>
+              <div><label for="bookAuthor">Author *</label><input id="bookAuthor" name="author" required placeholder="Author name"></div>
+              <div><label for="bookCategory">Category *</label><input id="bookCategory" name="category" required placeholder="e.g. Fiction"></div>
+              <div><label for="bookIsbn">ISBN (optional)</label><input id="bookIsbn" name="isbn" placeholder="ISBN number"></div>
+              <div><label for="bookCopies">Total copies *</label><input id="bookCopies" name="totalCopies" type="number" min="1" value="1" required></div>
+              <div class="form-buttons"><button class="btn btn-primary" type="submit">Save book</button><button id="cancelBookEdit" class="btn btn-light" type="button" hidden>Cancel edit</button></div>
+            </form>
+          </section>
+          <section class="panel"><div class="toolbar"><div class="search-box"><span>⌕</span><input id="bookSearch" placeholder="Search title, author, category or ISBN"></div><select id="availabilityFilter" aria-label="Filter availability"><option value="all">All availability</option><option value="available">Available</option><option value="unavailable">Out of stock</option></select></div>
+            <div class="table-wrap"><table><thead><tr><th>Book</th><th>Author</th><th>Category</th><th>Available / Total</th><th>Status</th><th>Actions</th></tr></thead><tbody id="booksTable"></tbody></table></div>
+          </section>
+        </section>
+
+        <section id="page-students" class="page" hidden>
+          <div class="section-intro"><div><h2>Students</h2><p>Register borrowers and maintain student details.</p></div></div>
+          <section class="panel form-panel"><div class="panel-heading"><div><h3>Register a student</h3><p>Student ID and email must be unique.</p></div></div>
+            <form id="studentForm" class="form-grid">
+              <div><label for="studentName">Full name *</label><input id="studentName" name="name" required placeholder="Student name"></div>
+              <div><label for="studentCode">Student ID *</label><input id="studentCode" name="studentId" required placeholder="e.g. STU002"></div>
+              <div><label for="studentEmail">Email *</label><input id="studentEmail" name="email" type="email" required placeholder="student@college.edu"></div>
+              <div><label for="studentCourse">Course / department *</label><input id="studentCourse" name="course" required placeholder="e.g. Computer Science"></div>
+              <div class="form-buttons"><button class="btn btn-primary" type="submit">Register student</button></div>
+            </form>
+          </section>
+          <section class="panel"><div class="toolbar"><div class="search-box"><span>⌕</span><input id="studentSearch" placeholder="Search name, student ID, email or course"></div></div><div class="table-wrap"><table><thead><tr><th>Name</th><th>Student ID</th><th>Email</th><th>Course</th><th>Registered</th></tr></thead><tbody id="studentsTable"></tbody></table></div></section>
+        </section>
+
+        <section id="page-circulation" class="page" hidden>
+          <div class="section-intro"><div><h2>Issue & return</h2><p>Record book loans and keep availability up to date.</p></div></div>
+          <section class="panel form-panel"><div class="panel-heading"><div><h3>Issue a book</h3><p>Books are given a 14-day due date by default.</p></div></div>
+            <form id="issueForm" class="form-grid">
+              <div><label for="issueBook">Select available book *</label><select id="issueBook" required></select></div>
+              <div><label for="issueStudent">Select student *</label><select id="issueStudent" required></select></div>
+              <div class="form-buttons"><button class="btn btn-primary" type="submit">Confirm issue</button></div>
+            </form>
+          </section>
+          <section class="panel"><div class="panel-heading"><div><h3>Currently issued books</h3><p>Mark a loan as returned to restore availability.</p></div></div><div class="table-wrap"><table><thead><tr><th>Book</th><th>Student</th><th>Issue date</th><th>Due date</th><th>Action</th></tr></thead><tbody id="activeLoans"></tbody></table></div></section>
+        </section>
+
+        <section id="page-history" class="page" hidden>
+          <div class="section-intro"><div><h2>Issue/return history</h2><p>Search every borrowing record, including completed returns.</p></div></div>
+          <section class="panel"><div class="toolbar"><div class="search-box"><span>⌕</span><input id="historySearch" placeholder="Search book, student, ID or status"></div></div><div class="table-wrap"><table><thead><tr><th>Record</th><th>Book</th><th>Student</th><th>Issued</th><th>Due</th><th>Returned</th><th>Status</th></tr></thead><tbody id="historyTable"></tbody></table></div></section>
+        </section>
+        <footer class="footer">LibraryDesk <span>•</span> Library Management System <span>•</span> DevOps Lab Project</footer>
+      </div>
+    </main>
+  </div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
